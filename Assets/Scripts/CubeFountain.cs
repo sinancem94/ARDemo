@@ -2,11 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
-using UnityEngine.Experimental.XR;
 using UnityEngine.XR.ARSubsystems;
 using UtmostInput;
 
-public class ARCubeFountain : MonoBehaviour
+public class CubeFountain : MonoBehaviour
 {
     [SerializeField]
     private GameObject indicatorObject;
@@ -14,29 +13,27 @@ public class ARCubeFountain : MonoBehaviour
     [SerializeField] 
     private GameObject cubeObject;
     
-    private ARSessionOrigin _sessionOrigin;
-    private ARRaycastManager _raycastManager;
 
     private Camera _mainCamera;
 
     private GameObject _cubeParent;
     private List<Cube> _pooledCubes;
     private GameObject _indicator;
-
+    
     void Start()
     {
-        _sessionOrigin = FindObjectOfType<ARSessionOrigin>();
-        _raycastManager = FindObjectOfType<ARRaycastManager>();
 
-        _mainCamera = _sessionOrigin.camera;
+        _mainCamera = Camera.main;
 
         _cubeParent = new GameObject(name: "cubes");
         _pooledCubes = new List<Cube>();
         for (int i = 0; i < 100; i++)
         {
             var cube = GameObject.Instantiate(cubeObject, _cubeParent.transform);
+            cube.GetComponent<Cube>().Reset();
             _pooledCubes.Add(cube.GetComponent<Cube>());
         }
+        
         _indicator = GameObject.Instantiate(indicatorObject);
         
         InputEventManager.inputEvent.onTouch += OnPress;
@@ -50,15 +47,15 @@ public class ARCubeFountain : MonoBehaviour
 
     private void UpdateFountainPose()
     {
-        var screenCenter = _mainCamera.ViewportToScreenPoint(new Vector3(0.5f, 0.5f, 0f));
-        var hits = new List<ARRaycastHit>();
+        var screenCenter = _mainCamera.ViewportToScreenPoint(Vector3.one * 0.5f);
+        RaycastHit hit;
         var camForward = _mainCamera.transform.forward;
-
-        if (_raycastManager.Raycast(screenCenter, hits, TrackableType.Planes))
+        var ray = new Ray(_mainCamera.transform.position, camForward);
+        if (Physics.Raycast(ray, out hit,150f) )
         {
             _indicator.SetActive(true);
-            _indicator.transform.rotation = Quaternion.LookRotation(new Vector3(camForward.x,0f,camForward.z), hits[0].pose.up);
-            _indicator.transform.position = hits[0].pose.position;
+            _indicator.transform.rotation = Quaternion.LookRotation(new Vector3(camForward.x,0f,camForward.z), hit.normal);
+            _indicator.transform.position = hit.point;
         }
         else
         {
@@ -79,5 +76,6 @@ public class ARCubeFountain : MonoBehaviour
                 break;
             }
         }
+        
     }
 }

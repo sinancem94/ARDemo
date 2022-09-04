@@ -39,7 +39,7 @@ public class InputEventManager : MonoBehaviour
     {
         SetTouch();
 
-        #if !MOBILE
+        //#if !MOBILE
         MouseMoved();
         if(inputX.MouseRightClick())
             MouseRightClick(inputX.MouseAxis());
@@ -73,7 +73,7 @@ public class InputEventManager : MonoBehaviour
         
         if(inputX.isReleasedKey(KeyCode.E))
             ReleasedKey(KeyCode.E);
-        #endif
+        //#endif
     }
 
     void SetTouch()

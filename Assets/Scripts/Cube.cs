@@ -8,13 +8,15 @@ public class Cube : MonoBehaviour
     private Rigidbody _rigidbody;
     private Vector3 _initialScale;
     private bool _isActive;
-
+    private float _activeTime;
+    
     public bool IsActive => _isActive;
     
-    void Start()
+    void Awake()
     {
         _initialScale = transform.localScale;
         _rigidbody = GetComponent<Rigidbody>();
+        _activeTime = 0f;
     }
 
     
@@ -22,22 +24,28 @@ public class Cube : MonoBehaviour
     {
         if (_isActive)
         {
-            transform.localScale -= Vector3.one * 0.01f;
-
-            if (transform.localScale.magnitude < 0.005)
+            transform.localScale -= Vector3.one * 0.001f;
+            _activeTime += Time.deltaTime;
+            if (_activeTime >= 2f)
             {
-                gameObject.SetActive(false);
-                _isActive = false;
+                Reset();
             }
         }
     }
 
     public void Go(Vector3 pos, Vector3 dir)
     {
-        transform.localScale = _initialScale;
         transform.position = pos;
         _rigidbody.AddForce(initialForce * dir);
         gameObject.SetActive(true);
         _isActive = true;
+    }
+
+    public void Reset()
+    {
+        gameObject.SetActive(false);
+        transform.localScale = _initialScale;
+        _isActive = false;
+        _activeTime = 0f;
     }
 }
