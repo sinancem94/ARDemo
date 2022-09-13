@@ -39,7 +39,7 @@ public class ARCubeFountain : MonoBehaviour
         }
         _indicator = GameObject.Instantiate(indicatorObject);
         
-        InputEventManager.inputEvent.onTouch += OnPress;
+        InputEventManager.inputEvent.onTouchStarted += OnPress;
     }
 
     // Update is called once per frame
@@ -54,7 +54,7 @@ public class ARCubeFountain : MonoBehaviour
         var hits = new List<ARRaycastHit>();
         var camForward = _mainCamera.transform.forward;
 
-        if (_raycastManager.Raycast(screenCenter, hits, TrackableType.Planes))
+        if (_raycastManager.Raycast(screenCenter, hits, TrackableType.PlaneWithinPolygon))
         {
             _indicator.SetActive(true);
             _indicator.transform.rotation = Quaternion.LookRotation(new Vector3(camForward.x,0f,camForward.z), hits[0].pose.up);
@@ -75,7 +75,7 @@ public class ARCubeFountain : MonoBehaviour
                 if(cube.IsActive)
                     continue;
             
-                cube.Go(_indicator.transform.position, Vector3.up);
+                cube.Go(_indicator.transform.position,  _indicator.transform.rotation, Vector3.up);
                 break;
             }
         }

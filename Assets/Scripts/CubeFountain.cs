@@ -72,7 +72,7 @@ public class CubeFountain : MonoBehaviour
                 if(cube.IsActive)
                     continue;
             
-                cube.Go(_indicator.transform.position, Vector3.up);
+                cube.Go(_indicator.transform.position, _indicator.transform.rotation, Vector3.up);
                 break;
             }
         }

@@ -22,7 +22,7 @@ public class Cube : MonoBehaviour
     
     void Update()
     {
-        if (_isActive)
+        /*if (_isActive)
         {
             transform.localScale -= Vector3.one * 0.001f;
             _activeTime += Time.deltaTime;
@@ -30,13 +30,14 @@ public class Cube : MonoBehaviour
             {
                 Reset();
             }
-        }
+        }*/
     }
 
-    public void Go(Vector3 pos, Vector3 dir)
+    public void Go(Vector3 pos, Quaternion rot, Vector3 dir)
     {
         transform.position = pos;
-        _rigidbody.AddForce(initialForce * dir);
+        transform.rotation = rot;
+        //_rigidbody.AddForce(initialForce * dir);
         gameObject.SetActive(true);
         _isActive = true;
     }
